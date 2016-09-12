@@ -1,31 +1,35 @@
 import React = require("react");
 import calculator = require("calculator");
-import Calculator = calculator.Calculator;
 
-export class LoginPageProps {
-}
+namespace login {
 
-export class LoginPageState {
-}
+    import Calculator = calculator.Calculator;
 
-
-export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
-
-    calc: Calculator;
-
-    constructor(props:LoginPageProps) {
-        super(props);
-        this.state = new LoginPageState();
-        this.calc = new Calculator();
+    export class LoginPageProps {
     }
 
-    render() {
-        return (
-            <div className="loginPage">
-                <p>Login page</p>
-            </div>
-        )
+    export class LoginPageState {
     }
+
+
+    export class LoginPage extends React.Component<LoginPageProps, LoginPageState> {
+
+        calc: Calculator;
+
+        constructor(props: LoginPageProps) {
+            super(props);
+            this.state = new LoginPageState();
+            this.calc = new Calculator();
+        }
+
+        render() {
+            return (
+                <div className="loginPage">
+                    <p>Login page</p>
+                </div>
+            )
+        }
+    }
+
+
 }
-
-

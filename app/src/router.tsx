@@ -1,14 +1,13 @@
-import React = require("react");
-import login = require("login");
 
 
 namespace main {
 
-    import AppTemplate = page.AppTemplate;
-    import NotFoundPage = page.NotFoundPage;
-    import ReactDOM = React.ReactDOM;
     import LoginPage = login.LoginPage;
-    
+
+    import Router = ReactRouter.Router;
+    import Route = ReactRouter.Route;
+    import IndexRoute = ReactRouter.IndexRoute;
+
     ReactDOM.render((
         <Router>
             <Route path="/" component={AppTemplate}>

@@ -12,6 +12,7 @@ var rev = require('gulp-rev');
 var revReplace = require('gulp-rev-replace');
 var gulpFilter = require('gulp-filter');
 var folders = require('gulp-folders');
+var gutil = require('gulp-util');
 
 
 var buildDir = function(path) {return './build/' + path};
@@ -47,9 +48,29 @@ gulp.task('scripts-libs', function() {
 });
 
 
-gulp.task('scripts', ['scripts-modules'], function () {
 
-    var tsResult = gulp.src([appDir('/**/*.ts*'), typingsDir('/**/*.d.ts')])
+var modules = {"calculator": [],
+               "login": ["calculator"]};
+
+
+
+gulp.task('concat-main', function () {
+    return gulp.src(appDir('/src/**/*.ts*'))
+        .pipe(concat('main.tsx'))
+        .pipe(gulp.dest(releaseDevDir('main')));
+});
+
+gulp.task('concat-modules', folders(modulesDir(''), function (module) {
+    return gulp.src(modulesDir(module+'/src/**/*.ts*'))
+        .pipe(concat(module+'.tsx'))
+        .pipe(gulp.dest(releaseDevDir('modules')));
+}));
+
+gulp.task('scripts', ['concat-main'], function () {
+
+    gutil.log([releaseDevDir('main/**/*.ts*'), releaseDevDir('modules/**/*.d.ts'), typingsDir('/**/*.d.ts')]);
+
+    var tsResult = gulp.src([releaseDevDir('main/**/*.ts*'), releaseDevDir('scripts/**/*.d.ts'), typingsDir('/**/*.d.ts')])
         .pipe(sourcemaps.init()) // This means sourcemaps will be generated
         .pipe(ts({
             'module': 'amd',
@@ -59,42 +80,7 @@ gulp.task('scripts', ['scripts-modules'], function () {
             'declaration': true,
             'target': 'ES5',
             'jsx': 'React',
-            sortOutput: true,
-            gulpConcat: true,
-            gulpSourcemaps: true,
-            noExternalResolve: true,
-            typescript: typescript
-        }));
-
-
-    return merge([
-        tsResult.dts.pipe(concat(main+'.d.ts')).pipe(gulp.dest(releaseDevDir('scripts'))),
-        tsResult.js
-            .pipe(concat('main.js'))
-            .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
-            .pipe(gulp.dest(releaseDevDir('scripts')))
-    ]);
-});
-
-var modules = {"calculator": [],
-               "login": ["__Calculator"]};
-
-
-gulp.task('scripts-modules', Object.keys(modules).forEach(function (module) {
-
-    var moduleDependencies = modules[module].map(function(dependency) { return releaseDevDir('scripts/'+dependency+".d.ts")});
-
-    var tsResult = gulp.src([modulesDir(module+"/src/_"+module+".ts")].concat([modulesDir(module+'/**/*.ts*'), typingsDir('/**/*.d.ts')]).concat(moduleDependencies))
-        .pipe(sourcemaps.init()) // This means sourcemaps will be generated
-        .pipe(ts({
-            'module': 'commonjs',
-            'noImplicitAny': true,
-            'removeComments': true,
-            'preserveConstEnums': true,
-            'declaration': true,
-            'target': 'ES5',
-            'jsx': 'React',
-             outFile: module+'.js',//module+'.d.ts',
+            outFile: 'main.js',
             sortOutput: true,
             gulpConcat: true,
             gulpSourcemaps: true,
@@ -109,15 +95,39 @@ gulp.task('scripts-modules', Object.keys(modules).forEach(function (module) {
             .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
             .pipe(gulp.dest(releaseDevDir('scripts')))
     ]);
-    // return tsResult.pipe(gulp.dest(releaseDevDir('scripts')));
+});
 
-    // return merge([
-    //     tsResult.dts.pipe(concat(module+'.d.ts')).pipe(gulp.dest(releaseDevDir('scripts'))),
-    //     tsResult.js
-    //         .pipe(concat(module+'.js'))
-    //         .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
-    //         .pipe(gulp.dest(releaseDevDir('scripts')))
-    // ]);
+gulp.task('scripts-modules', ['concat-modules'], folders(modulesDir(''), function (module) {
+
+    var moduleDependencies = modules[module].map(function(dependency) { return releaseDevDir('scripts/'+dependency+".d.ts")});
+
+    gutil.log([releaseDevDir('modules/'+module+".tsx"), typingsDir('**/*.d.ts')].concat(moduleDependencies));
+
+    var tsResult = gulp.src([releaseDevDir('modules/'+module+".tsx"), typingsDir('**/*.d.ts')].concat(moduleDependencies))
+        .pipe(sourcemaps.init()) // This means sourcemaps will be generated
+        .pipe(ts({
+            'module': 'amd',
+            'noImplicitAny': true,
+            'removeComments': true,
+            'preserveConstEnums': true,
+            'declaration': true,
+            'target': 'ES5',
+            'jsx': 'React',
+             outFile: module+'.js',
+            sortOutput: true,
+            gulpConcat: true,
+            gulpSourcemaps: true,
+            noExternalResolve: true,
+            typescript: typescript
+        }));
+
+
+    return merge([
+        tsResult.dts.pipe(gulp.dest(releaseDevDir('scripts'))),
+        tsResult.js
+            .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
+            .pipe(gulp.dest(releaseDevDir('scripts')))
+    ]);
 }));
 
 

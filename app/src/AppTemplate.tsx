@@ -1,4 +1,5 @@
-namespace page {
+
+namespace main {
 
 
     export class AppTemplateProps {

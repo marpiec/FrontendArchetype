@@ -1,18 +1,12 @@
-/// ///<reference path="Sumator.ts"/>
 
-namespace __Calculator {
+namespace calculator {
+
     export class Calculator {
 
-        static sum(a: number, b: number) {
+        static sum(a: number, b: number): number {
             return Sumator.sum(a, b);
         }
 
     }
-    
+
 }
-
-
-module "calculator" {
-    export = __Calculator;
-}
-

@@ -1,0 +1,2 @@
+namespace login {}
+export = login;

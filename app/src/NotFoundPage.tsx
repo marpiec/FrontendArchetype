@@ -1,4 +1,4 @@
-namespace page {
+namespace main {
 
 
     export class NotFoundPageProps {
