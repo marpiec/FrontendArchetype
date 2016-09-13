@@ -1,6 +1,12 @@
+///<reference path="actions/Reducers.ts"/>
+
 namespace main {
 
 
+    import Todos = state.Todos;
+    import AddEntry = actions.AddEntry;
+    import Store = Redux.Store;
+    import Action = Redux.Action;
     export class AppTemplateProps {
         children: React.Component<any, any>[];
     }
@@ -13,6 +19,17 @@ namespace main {
         constructor(props:AppTemplateProps) {
             super(props);
             this.state = new AppTemplateState();
+
+
+            const store: Store<Todos> = Redux.createStore<Todos>(reducers.TodosReducer, new Todos([]));
+
+            store.dispatch(new AddEntry(1, "Hello"));
+
+            console.log(store.getState());
+
+            store.dispatch(new AddEntry(2, "World!"));
+
+            console.log(store.getState());
         }
 
         render() {

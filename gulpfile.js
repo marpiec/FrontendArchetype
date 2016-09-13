@@ -41,6 +41,7 @@ gulp.task('scripts-libs', function() {
         nodeModulesDir('react-dom/dist/react-dom'+min+'.js'), // DOM manipulation with React
         nodeModulesDir('history/umd/History' +min+ '.js'), // TODO ???
         nodeModulesDir('react-router/umd/ReactRouter' +min+ '.js'),
+        nodeModulesDir('redux/dist/redux' +min+ '.js'),
         nodeModulesDir('classnames/index.js'), // Easy css class names manipulation for React
         nodeModulesDir('jquery/dist/jquery'+min+'.js'), // JQuey
         nodeModulesDir('immutable/dist/immutable' +min+ '.js'), // Immutable collections
