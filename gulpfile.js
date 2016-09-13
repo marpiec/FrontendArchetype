@@ -39,7 +39,7 @@ gulp.task('scripts-libs', function() {
     return gulp.src([
         nodeModulesDir('react/dist/react'+min+'.js'), // React
         nodeModulesDir('react-dom/dist/react-dom'+min+'.js'), // DOM manipulation with React
-        nodeModulesDir('history/umd/History' +min+ '.js'),
+        nodeModulesDir('history/umd/History' +min+ '.js'), // TODO ???
         nodeModulesDir('react-router/umd/ReactRouter' +min+ '.js'),
         nodeModulesDir('classnames/index.js'), // Easy css class names manipulation for React
         nodeModulesDir('jquery/dist/jquery'+min+'.js'), // JQuey
