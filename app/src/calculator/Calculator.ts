@@ -1,4 +1,3 @@
-
 namespace calculator {
 
     export class Calculator {

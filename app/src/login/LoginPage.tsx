@@ -1,6 +1,3 @@
-import React = require("react");
-import calculator = require("calculator");
-
 namespace login {
 
     import Calculator = calculator.Calculator;

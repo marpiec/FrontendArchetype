@@ -1,12 +1,12 @@
 
-
 namespace main {
 
-    import LoginPage = login.LoginPage;
 
-    import Router = ReactRouter.Router;
-    import Route = ReactRouter.Route;
     import IndexRoute = ReactRouter.IndexRoute;
+    import Route = ReactRouter.Route;
+    import Router = ReactRouter.Router;
+
+    import LoginPage = login.LoginPage;
 
     ReactDOM.render((
         <Router>

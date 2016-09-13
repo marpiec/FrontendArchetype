@@ -1,2 +1,0 @@
-namespace login {}
-export = login;

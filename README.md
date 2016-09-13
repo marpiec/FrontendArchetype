@@ -22,3 +22,13 @@ Configuration tutorial: [Typescript + Webpack + React](https://www.typescriptlan
 # Requirements
 - Ensure some dependencies are installed globally (sudo might be required):
  npm install -g typescript typings webpack
+
+
+
+
+#Typings installed:
+
+typings install dt~react --global --save
+typings install dt~react-router --global --save
+typings install dt~react-router/history --global --save
+typings install dt~react-dom --global --save

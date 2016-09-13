@@ -18,9 +18,10 @@ var gutil = require('gulp-util');
 var buildDir = function(path) {return './build/' + path};
 var tmpDir = function(path) {return './build/tmp/' + path};
 var testTmpDir = function(path) {return './build/tmp/test/' + path};
-var typingsDir = function(path) {return './typings/' + path};
 var appDir = function(path) {return './app/' + path};
-var modulesDir = function(path) {return './modules/' + path};
+var srcDir = function(path) {return './app/src/' + path};
+var libsDir = function(path) {return './app/libs/' + path};
+var stylesDir = function(path) {return './app/styles/' + path};
 var nodeDir = function(path) {return './node_modules/' + path};
 var releaseDevDir = function(path) {return './build/releaseDev/' + path};
 var releaseDir = function(path) {return './build/release/' + path};
@@ -48,29 +49,9 @@ gulp.task('scripts-libs', function() {
 });
 
 
+gulp.task('scripts', function () {
 
-var modules = {"calculator": [],
-               "login": ["calculator"]};
-
-
-
-gulp.task('concat-main', function () {
-    return gulp.src(appDir('/src/**/*.ts*'))
-        .pipe(concat('main.tsx'))
-        .pipe(gulp.dest(releaseDevDir('main')));
-});
-
-gulp.task('concat-modules', folders(modulesDir(''), function (module) {
-    return gulp.src(modulesDir(module+'/src/**/*.ts*'))
-        .pipe(concat(module+'.tsx'))
-        .pipe(gulp.dest(releaseDevDir('modules')));
-}));
-
-gulp.task('scripts', ['concat-main'], function () {
-
-    gutil.log([releaseDevDir('main/**/*.ts*'), releaseDevDir('modules/**/*.d.ts'), typingsDir('/**/*.d.ts')]);
-
-    var tsResult = gulp.src([releaseDevDir('main/**/*.ts*'), releaseDevDir('scripts/**/*.d.ts'), typingsDir('/**/*.d.ts')])
+    var tsResult = gulp.src([srcDir('**/*.ts*'), libsDir('**/*.d.ts')])
         .pipe(sourcemaps.init()) // This means sourcemaps will be generated
         .pipe(ts({
             'module': 'amd',
@@ -80,7 +61,6 @@ gulp.task('scripts', ['concat-main'], function () {
             'declaration': true,
             'target': 'ES5',
             'jsx': 'React',
-            outFile: 'main.js',
             sortOutput: true,
             gulpConcat: true,
             gulpSourcemaps: true,
@@ -90,45 +70,13 @@ gulp.task('scripts', ['concat-main'], function () {
 
 
     return merge([
-        tsResult.dts.pipe(gulp.dest(releaseDevDir('scripts'))),
+        tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseDevDir('scripts'))),
         tsResult.js
+            .pipe(concat('main.js'))
             .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
             .pipe(gulp.dest(releaseDevDir('scripts')))
     ]);
 });
-
-gulp.task('scripts-modules', ['concat-modules'], folders(modulesDir(''), function (module) {
-
-    var moduleDependencies = modules[module].map(function(dependency) { return releaseDevDir('scripts/'+dependency+".d.ts")});
-
-    gutil.log([releaseDevDir('modules/'+module+".tsx"), typingsDir('**/*.d.ts')].concat(moduleDependencies));
-
-    var tsResult = gulp.src([releaseDevDir('modules/'+module+".tsx"), typingsDir('**/*.d.ts')].concat(moduleDependencies))
-        .pipe(sourcemaps.init()) // This means sourcemaps will be generated
-        .pipe(ts({
-            'module': 'amd',
-            'noImplicitAny': true,
-            'removeComments': true,
-            'preserveConstEnums': true,
-            'declaration': true,
-            'target': 'ES5',
-            'jsx': 'React',
-             outFile: module+'.js',
-            sortOutput: true,
-            gulpConcat: true,
-            gulpSourcemaps: true,
-            noExternalResolve: true,
-            typescript: typescript
-        }));
-
-
-    return merge([
-        tsResult.dts.pipe(gulp.dest(releaseDevDir('scripts'))),
-        tsResult.js
-            .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
-            .pipe(gulp.dest(releaseDevDir('scripts')))
-    ]);
-}));
 
 
 gulp.task('test-scripts', function () {
@@ -161,7 +109,7 @@ gulp.task('test-scripts', function () {
 
 
 gulp.task('styles', function () {
-    gulp.src(appDir('styles/**/*.scss'))
+    gulp.src(stylesDir('**/*.scss'))
         .pipe(sourcemaps.init())
         .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
         .pipe(sourcemaps.write('.'))
