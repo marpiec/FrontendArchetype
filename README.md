@@ -16,8 +16,11 @@ Configuration tutorial: [Typescript + Webpack + React](https://www.typescriptlan
 - node.js
 - webpack
 - typescript
-- [Typings](https://github.com/typings/typings) - TypeScript Definition Manager - it will grab diefinition files.
+- on hold - [Typings](https://github.com/typings/typings) - TypeScript Definition Manager - it will grab diefinition files.
 - React + React DOM
+- Redux
+- lodash
+- moment.js
 
 # Requirements
 - Ensure some dependencies are installed globally (sudo might be required):
