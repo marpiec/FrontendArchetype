@@ -1,3 +1,5 @@
+/// <reference path="../calculator/Calculator.ts"/>
+
 namespace login {
 
     import Calculator = calculator.Calculator;

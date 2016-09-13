@@ -1,3 +1,5 @@
+///<reference path="Sumator.ts"/>
+
 namespace calculator {
 
     export class Calculator {

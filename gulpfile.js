@@ -20,9 +20,9 @@ var tmpDir = function(path) {return './build/tmp/' + path};
 var testTmpDir = function(path) {return './build/tmp/test/' + path};
 var appDir = function(path) {return './app/' + path};
 var srcDir = function(path) {return './app/src/' + path};
-var libsDir = function(path) {return './app/libs/' + path};
+var libsDefinitionsDir = function(path) {return './app/libs.d/' + path};
 var stylesDir = function(path) {return './app/styles/' + path};
-var nodeDir = function(path) {return './node_modules/' + path};
+var nodeModulesDir = function(path) {return './node_modules/' + path};
 var releaseDevDir = function(path) {return './build/releaseDev/' + path};
 var releaseDir = function(path) {return './build/release/' + path};
 
@@ -35,23 +35,23 @@ gulp.task('html', function() {
 
 
 gulp.task('scripts-libs', function() {
-    var min = '';
+    var min = ''; // TODO fix min as different files have different notation
     return gulp.src([
-        nodeDir('react/dist/react'+min+'.js'),
-        nodeDir('react-dom/dist/react-dom'+min+'.js'),
-        nodeDir('history/umd/History' +min+ '.js'),
-        nodeDir('react-router/umd/ReactRouter' +min+ '.js'),
-        nodeDir('classnames/index.js'),
-        nodeDir('jquery/dist/jquery'+min+'.js'),
-        nodeDir('bootstrap-sass/assets/javascripts/bootstrap'+min+'.js'),
-        nodeDir('immutable/dist/immutable' +min+ '.js')
+        nodeModulesDir('react/dist/react'+min+'.js'), // React
+        nodeModulesDir('react-dom/dist/react-dom'+min+'.js'), // DOM manipulation with React
+        nodeModulesDir('history/umd/History' +min+ '.js'),
+        nodeModulesDir('react-router/umd/ReactRouter' +min+ '.js'),
+        nodeModulesDir('classnames/index.js'), // Easy css class names manipulation for React
+        nodeModulesDir('jquery/dist/jquery'+min+'.js'), // JQuey
+        nodeModulesDir('immutable/dist/immutable' +min+ '.js'), // Immutable collections
+        nodeModulesDir('lodash/lodash' +min+ '.js') // Utility library // TODO split it?
     ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDevDir('scripts/')))
 });
 
 
 gulp.task('scripts', function () {
 
-    var tsResult = gulp.src([srcDir('**/*.ts*'), libsDir('**/*.d.ts')])
+    var tsResult = gulp.src([srcDir('**/*.ts*'), libsDefinitionsDir('**/*.d.ts')])
         .pipe(sourcemaps.init()) // This means sourcemaps will be generated
         .pipe(ts({
             'module': 'amd',
@@ -118,7 +118,7 @@ gulp.task('styles', function () {
 
 // HTML
 gulp.task('fonts', function() {
-    return gulp.src([nodeDir('font-awesome/fonts/*')])
+    return gulp.src([nodeModulesDir('font-awesome/fonts/*')])
         .pipe(gulp.dest(releaseDevDir('fonts')))
 });
 

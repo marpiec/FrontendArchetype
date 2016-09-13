@@ -1,5 +1,4 @@
 .appTemplate {
-  @import "../scripts/main/MainPage";
-  @import "../scripts/main/GamePage";
+  @import "login/LoginPage";
   @import "NotFoundPage";
 }

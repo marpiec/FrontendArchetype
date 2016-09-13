@@ -18,7 +18,7 @@ namespace main {
         render() {
             return (
                 <div className="appTemplate">
-                    <p>Ships battle</p>
+                    <p>Frontend Archetype</p>
                     <div>
                         {this.props.children}
                     </div>

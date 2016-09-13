@@ -1,3 +1,5 @@
+/// <reference path="login/LoginPage.tsx"/>
+
 
 namespace main {
 
