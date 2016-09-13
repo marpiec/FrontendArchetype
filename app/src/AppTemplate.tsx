@@ -15,8 +15,8 @@ namespace main {
     }
 
 
-    function purify(a: Action) {
-        return JSON.parse(JSON.stringify(a));
+    function purify(a: Action): any {
+        return _.merge({}, a);
     }
 
     export class AppTemplate extends React.Component<AppTemplateProps, AppTemplateState> {
