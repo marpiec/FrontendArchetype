@@ -4,23 +4,15 @@ namespace actions {
     
     export class AddEntry implements Action {
         type = "AddEntry";
-        id: number;
-        description: string;
 
-        constructor(id: number, description:string) {
-            this.id = id;
-            this.description = description;
-        }
+        constructor(public id: number, public description:string) {}
     }
 
 
     export class RemoveEntry implements Action {
         type = "RemoveEntry";
-        id: number;
 
-        constructor(id: number) {
-            this.id = id;
-        }
+        constructor(public id: number) {}
     }
 
 

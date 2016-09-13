@@ -15,6 +15,10 @@ namespace main {
     }
 
 
+    function purify(a: Action) {
+        return JSON.parse(JSON.stringify(a));
+    }
+
     export class AppTemplate extends React.Component<AppTemplateProps, AppTemplateState> {
         constructor(props:AppTemplateProps) {
             super(props);
@@ -23,11 +27,11 @@ namespace main {
 
             const store: Store<Todos> = Redux.createStore<Todos>(reducers.TodosReducer, new Todos([]));
 
-            store.dispatch(new AddEntry(1, "Hello"));
+            store.dispatch(purify(new AddEntry(1, "Hello")));
 
             console.log(store.getState());
 
-            store.dispatch(new AddEntry(2, "World!"));
+            store.dispatch(purify(new AddEntry(2, "World!")));
 
             console.log(store.getState());
         }
