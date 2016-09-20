@@ -4,6 +4,10 @@ Project for inventing robust, complete and easy to use archetype for browser bas
 # Requirements
 - [TypeScript](https://www.typescriptlang.org/) support - modern, statically typed language based on JavaScript syntax.
 - Asychronously loaded modules - so application will not have to load all of the source code at once.
+- Tests
+- Internationalization (i18next)
+- Minification
+
 
 # Build tool
 - [Node.js](https://nodejs.org/en/) as a platform to run build tool

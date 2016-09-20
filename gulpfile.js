@@ -22,10 +22,11 @@ var appDir = function(path) {return './app/' + path};
 var srcDir = function(path) {return './app/src/' + path};
 var libsDefinitionsDir = function(path) {return './app/libs.d/' + path};
 var stylesDir = function(path) {return './app/styles/' + path};
-var nodeModulesDir = function(path) {return './node_modules/' + path};
+var npmModulesDir = function(path) {return './node_modules/' + path};
 var releaseDevDir = function(path) {return './build/releaseDev/' + path};
 var releaseDir = function(path) {return './build/release/' + path};
 
+var npmDependency = function(dependency, dependencyMinimized, minimized) {return minimized ? npmModulesDir(dependencyMinimized) : npmModulesDir(dependency)};
 
 // HTML
 gulp.task('html', function() {
@@ -37,15 +38,15 @@ gulp.task('html', function() {
 gulp.task('scripts-libs', function() {
     var min = ''; // TODO fix min as different files have different notation
     return gulp.src([
-        nodeModulesDir('react/dist/react'+min+'.js'), // React
-        nodeModulesDir('react-dom/dist/react-dom'+min+'.js'), // DOM manipulation with React
-        nodeModulesDir('history/umd/History' +min+ '.js'), // TODO ???
-        nodeModulesDir('react-router/umd/ReactRouter' +min+ '.js'),
-        nodeModulesDir('redux/dist/redux' +min+ '.js'),
-        nodeModulesDir('classnames/index.js'), // Easy css class names manipulation for React
-        nodeModulesDir('jquery/dist/jquery'+min+'.js'), // JQuey
-        nodeModulesDir('immutable/dist/immutable' +min+ '.js'), // Immutable collections
-        nodeModulesDir('lodash/lodash' +min+ '.js') // Utility library // TODO split it?
+        npmDependency('react/dist/react.js', 'react/dist/react.min.js', true), // React
+        npmDependency('react-dom/dist/react-dom.js', 'react-dom/dist/react-dom.min.js', true), // DOM manipulation with React
+        npmDependency('history/umd/history.js', 'history/umd/history.min.js'), // TODO ???
+        npmDependency('react-router/umd/ReactRouter.js', 'react-router/umd/ReactRouter.min.js', true),
+        npmDependency('redux/dist/redux.js', 'redux/dist/redux.min.js', true),
+        npmDependency('classnames/index.js', 'classnames/index.js', false), // Easy css class names manipulation for React
+        npmDependency('jquery/dist/jquery.js', 'jquery/dist/jquery.min.js', true), // JQuey
+        npmDependency('immutable/dist/immutable.js', 'immutable/dist/immutable.min.js', true), // Immutable collections
+        npmDependency('lodash/lodash.js', 'lodash/lodash.min.js', true) // Utility library // TODO split it?
     ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDevDir('scripts/')))
 });
 
@@ -119,7 +120,7 @@ gulp.task('styles', function () {
 
 // HTML
 gulp.task('fonts', function() {
-    return gulp.src([nodeModulesDir('font-awesome/fonts/*')])
+    return gulp.src([npmModulesDir('font-awesome/fonts/*')])
         .pipe(gulp.dest(releaseDevDir('fonts')))
 });
 
