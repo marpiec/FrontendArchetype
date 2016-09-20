@@ -46,7 +46,10 @@ gulp.task('scripts-libs', function() {
         npmDependency('classnames/index.js', 'classnames/index.js', false), // Easy css class names manipulation for React
         npmDependency('jquery/dist/jquery.js', 'jquery/dist/jquery.min.js', true), // JQuey
         npmDependency('immutable/dist/immutable.js', 'immutable/dist/immutable.min.js', true), // Immutable collections
-        npmDependency('lodash/lodash.js', 'lodash/lodash.min.js', true) // Utility library // TODO split it?
+        npmDependency('lodash/lodash.js', 'lodash/lodash.min.js', true), // Utility library // TODO split it?
+        npmDependency('moment/src/moment.js', 'moment/min/moment.min.js', true), // Date and time manipulation library
+        npmDependency('i18next/dist/umd/i18next.js', 'i18next/dist/umd/i18next.min.js', true), // internationalization library
+        npmDependency('react-i18next/dist/umd/react-i18next.js', 'react-i18next/dist/umd/react-i18next.min.js', true) // 18next wrapper for react
     ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDevDir('scripts/')))
 });
 
