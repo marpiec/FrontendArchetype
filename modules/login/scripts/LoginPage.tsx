@@ -1,6 +1,12 @@
 namespace login {
 
-    let calculator = require("scripts/modules/calculator");
+    const xhrObj = new XMLHttpRequest();
+// open and send a synchronous request
+    xhrObj.open('GET', "/scripts/modules/calculator.js", false);
+    xhrObj.send('');
+    eval(xhrObj.responseText);
+
+    // let calculator = require("scripts/modules/calculator");
 
     import Calculator = calculator.Calculator;
 
