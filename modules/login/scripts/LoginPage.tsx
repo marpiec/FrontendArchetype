@@ -5,6 +5,11 @@ namespace login {
     xhrObj.open('GET', "/scripts/modules/calculator.js", false);
     xhrObj.send('');
     eval(xhrObj.responseText);
+    //
+    // var fileref=document.createElement('script')
+    // fileref.setAttribute("type","text/javascript")
+    // fileref.setAttribute("src", "/scripts/modules/calculator.js")
+    // document.body.appendChild(fileref);
 
     // let calculator = require("scripts/modules/calculator");
 
