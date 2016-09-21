@@ -19,7 +19,9 @@ var buildDir = function(path) {return './build/' + path};
 var tmpDir = function(path) {return './build/tmp/' + path};
 var testTmpDir = function(path) {return './build/tmp/test/' + path};
 var appDir = function(path) {return './app/' + path};
-var srcDir = function(path) {return './app/src/' + path};
+var srcDir = function(path) {return './app/scripts/' + path};
+var modulesDir = function(path) {return './modules/' + path};
+var modulesSrcDir = function(module, path) {return './modules/' + module + '/' + path};
 var libsDefinitionsDir = function(path) {return './app/libs.d/' + path};
 var stylesDir = function(path) {return './app/styles/' + path};
 var npmModulesDir = function(path) {return './node_modules/' + path};
@@ -27,6 +29,20 @@ var releaseDevDir = function(path) {return './build/releaseDev/' + path};
 var releaseDir = function(path) {return './build/release/' + path};
 
 var npmDependency = function(dependency, dependencyMinimized, minimized) {return minimized ? npmModulesDir(dependencyMinimized) : npmModulesDir(dependency)};
+
+
+var tsProject = ts.createProject({
+    module: 'umd',
+    noImplicitAny: true,
+    removeComments: true,
+    preserveConstEnums: true,
+    declaration: true,
+    target: 'ES5',
+    jsx: 'React',
+    sortOutput: true,
+    noExternalResolve: true,
+    typescript: typescript
+});
 
 // HTML
 gulp.task('html', function() {
@@ -49,30 +65,48 @@ gulp.task('scripts-libs', function() {
         npmDependency('lodash/lodash.js', 'lodash/lodash.min.js', true), // Utility library // TODO split it?
         npmDependency('moment/src/moment.js', 'moment/min/moment.min.js', true), // Date and time manipulation library
         npmDependency('i18next/dist/umd/i18next.js', 'i18next/dist/umd/i18next.min.js', true), // internationalization library
-        npmDependency('react-i18next/dist/umd/react-i18next.js', 'react-i18next/dist/umd/react-i18next.min.js', true) // 18next wrapper for react
+        npmDependency('react-i18next/dist/umd/react-i18next.js', 'react-i18next/dist/umd/react-i18next.min.js', true), // 18next wrapper for react
+        npmDependency('requirejs/require.js', 'requirejs/require.js', true), // Require js
     ]).pipe(concat('libs.js')).pipe(gulp.dest(releaseDevDir('scripts/')))
 });
 
+var modules = {'calculator': [],
+               'login': ['calculator']};
 
-gulp.task('scripts', function () {
 
-    var tsResult = gulp.src([srcDir('**/*.ts*'), libsDefinitionsDir('**/*.d.ts')])
+function moduleTask(module) {
+    return function() {
+
+        var dependentModules = modules[module].map(function(dependency) {return releaseDevDir('scripts/modules/'+dependency+'.d.ts')});
+
+        var tsResult = gulp.src([modulesSrcDir(module, '**/*.ts*'), libsDefinitionsDir('**/*.d.ts')].concat(dependentModules))
+            .pipe(sourcemaps.init()) // This means sourcemaps will be generated
+            .pipe(ts(tsProject));
+
+        return merge([
+            tsResult.dts.pipe(concat(module+'.d.ts')).pipe(gulp.dest(releaseDevDir('scripts/modules'))),
+            tsResult.js
+                .pipe(concat(module+'.js'))
+                .pipe(sourcemaps.write("../maps")) // Now the sourcemaps are added to the .js file
+                .pipe(gulp.dest(releaseDevDir('scripts/modules')))
+        ]);
+    }
+}
+
+
+gulp.task('calculator', moduleTask('calculator'));
+gulp.task('login', ['calculator'], moduleTask('login'));
+
+gulp.task('scripts-modules', ['login']);
+
+
+
+
+gulp.task('scripts', ['scripts-modules'], function () {
+
+    var tsResult = gulp.src([libsDefinitionsDir('**/*.d.ts'), srcDir('**/*.ts*'), releaseDevDir('scripts/modules/**/*.d.ts')])
         .pipe(sourcemaps.init()) // This means sourcemaps will be generated
-        .pipe(ts({
-            'module': 'amd',
-            'noImplicitAny': true,
-            'removeComments': true,
-            'preserveConstEnums': true,
-            'declaration': true,
-            'target': 'ES5',
-            'jsx': 'React',
-            sortOutput: true,
-            gulpConcat: true,
-            gulpSourcemaps: true,
-            noExternalResolve: true,
-            typescript: typescript
-        }));
-
+        .pipe(ts(tsProject));
 
     return merge([
         tsResult.dts.pipe(concat('main.d.ts')).pipe(gulp.dest(releaseDevDir('scripts'))),
@@ -89,21 +123,7 @@ gulp.task('test-scripts', function () {
     var tsResult = gulp.src([appDir('scripts/test/**/*.ts'), appDir('scripts/test/libs.d/**/*.d.ts'),
                              appDir('scripts/main/utils/*.ts*'), appDir('scripts/main/libs.d/**/*.d.ts')],
                             {base: appDir('scripts')})
-        .pipe(ts({
-            'module': 'amd',
-            'noImplicitAny': true,
-            'removeComments': true,
-            'preserveConstEnums': true,
-            'declaration': true,
-            'target': 'ES5',
-            'jsx': 'React',
-            sortOutput: true,
-            gulpConcat: true,
-            gulpSourcemaps: true,
-            noExternalResolve: true,
-            typescript: typescript
-        }));
-
+        .pipe(ts(tsProject));
 
     return merge([
         tsResult.dts.pipe(gulp.dest(testTmpDir('scripts'))),
